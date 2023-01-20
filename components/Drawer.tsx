@@ -193,7 +193,6 @@ export default function DrawerX(notif: INotif) {
                         width="100%"
                         height="320"
                         allowFullScreen
-                        loading="lazy"
                         style={{ borderRadius: 20, display: "flex", marginBottom: 15 }}
                     />
                 </div>
@@ -203,7 +202,7 @@ export default function DrawerX(notif: INotif) {
                         margin: "0 auto",
                         width: "20%"
                     }}
-                    
+                    target={"_blank"}
                     href={"https://github.com/gfLobo/pomodoro"}
                 >
                     <svg viewBox="0 0 128 128">

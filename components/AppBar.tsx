@@ -66,7 +66,7 @@ export default function SearchAppBar(SearchInputValue:ISearch) {
                     
                     <Grid container spacing={{ xs: 0, md: 2,  }} sx={{p:1}} >
                         <Grid item  key={"logo-icon"}>
-                            <Avatar src='/icon.png'/>
+                            <Avatar alt="logo" src='/icon.png'/>
                         </Grid>
                         <Grid item  key={"logo"}>
                             <Typography sx={{ mt: 1, fontWeight:400, color:theme.palette.common.white }} variant="h6" component="div">Pomodoro</Typography>

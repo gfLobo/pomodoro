@@ -14,14 +14,14 @@ import { useTheme } from '@mui/material/styles';
 
 
 
-interface ITask{
-    searchTask:string
+interface ITask {
+    searchTask: string
 }
 
 
 
 
-export default function SpeedDialNewTask(searchTask:ITask) {
+export default function SpeedDialNewTask(searchTask: ITask) {
     const [open, setOpen] = React.useState(false);
     const [toDoTasks, setToDoTasks] = React.useState<Array<Task>>([])
     const handleOpen = () => setOpen(!open);
@@ -41,8 +41,8 @@ export default function SpeedDialNewTask(searchTask:ITask) {
 
 
     const actions = [
-        { icon: <CloseIcon  sx={{color:"white", fontSize: 28}} />, name: 'Close', action: handleOpen, color: "white" },
-        { icon: <SaveIcon  sx={{color:"white", fontSize: 28}} />, name: 'Save', action: openNewTask, color: 'lightgreen' },
+        { icon: <CloseIcon sx={{ color: "white", fontSize: 28 }} />, name: 'Close', action: handleOpen, color: "white" },
+        { icon: <SaveIcon sx={{ color: "white", fontSize: 28 }} />, name: 'Save', action: openNewTask, color: 'lightgreen' },
     ];
 
     function removeTask(taskID: string) {
@@ -56,7 +56,7 @@ export default function SpeedDialNewTask(searchTask:ITask) {
 
                 <Collapse in={open} >
                     <FormSetupPomodoro editNewTask={(task: Task) => {
-                        setNTask({...task, timeOpen:new Date()})
+                        setNTask({ ...task, timeOpen: new Date() })
                     }} />
                 </Collapse>
                 <Grid
@@ -65,17 +65,22 @@ export default function SpeedDialNewTask(searchTask:ITask) {
                 >
                     <Grid item>
                         <Tooltip title={open ? '' : 'New Pomodoro'}>
-                            <SpeedDial  aria-label="New Task" onClick={!open ? handleOpen : () => { }}
+                            <SpeedDial
+                                aria-label="New Task" onClick={!open ? handleOpen : () => { }}
                                 open={open} ariaLabel={'btn-new-task'}
-                                icon={<AddIcon sx={{color:"white", fontSize: 50}} />}
+                                icon={<AddIcon sx={{ color: "white", fontSize: 50 }} />}
                                 direction={"left"}
                                 hidden={open}
                                 sx={{
                                     "& .MuiButtonBase-root": {
-                                        bgcolor:theme.palette.mode === 'light' ? theme.palette.primary.main : theme.palette.secondary.main
+                                        bgcolor: theme.palette.mode === 'light' ? theme.palette.primary.main : theme.palette.secondary.main,
+                                        ":hover":{
+                                            bgcolor: theme.palette.mode === 'light' ? theme.palette.secondary.main : theme.palette.primary.main,
+
+                                        }
                                     },
                                 }}
-                                
+
                             >
                                 {actions.map((action) => (
                                     <SpeedDialAction
@@ -83,7 +88,6 @@ export default function SpeedDialNewTask(searchTask:ITask) {
                                         icon={action.icon}
                                         tooltipTitle={action.name}
                                         onClick={action.action}
-                                        sx={{ bgcolor: action.color }}
                                     />
                                 ))}
                             </SpeedDial>
@@ -95,29 +99,29 @@ export default function SpeedDialNewTask(searchTask:ITask) {
                 {searchTask.searchTask === '' || searchTask.searchTask === 'All tasks' ? toDoTasks.map((task: Task) => {
                     return (
                         <CardTask
-                        onDelete={removeTask}
-                        id={task.id} timeOpen={task.timeOpen}
-                        title={task.title}
-                        tags={task.tags}
-                        key={task.id} 
+                            onDelete={removeTask}
+                            id={task.id} timeOpen={task.timeOpen}
+                            title={task.title}
+                            tags={task.tags}
+                            key={task.id}
                         />
                     );
                 })
-            :
-            toDoTasks.filter((task: Task) => 
-                task.tags?.toLowerCase()?.match(searchTask.searchTask.toLowerCase() ) ||  task.title?.toLowerCase()?.match(searchTask.searchTask.toLowerCase())
-               ).map((task:Task)=>{
-                return (
-                    <CardTask
-                    onDelete={removeTask}
-                    id={task.id} timeOpen={task.timeOpen}
-                    title={task.title}
-                    tags={task.tags}
-                    key={task.id} 
-                    />
-                );
-            })
-            }
+                    :
+                    toDoTasks.filter((task: Task) =>
+                        task.tags?.toLowerCase()?.match(searchTask.searchTask.toLowerCase()) || task.title?.toLowerCase()?.match(searchTask.searchTask.toLowerCase())
+                    ).map((task: Task) => {
+                        return (
+                            <CardTask
+                                onDelete={removeTask}
+                                id={task.id} timeOpen={task.timeOpen}
+                                title={task.title}
+                                tags={task.tags}
+                                key={task.id}
+                            />
+                        );
+                    })
+                }
             </Box>
 
         </React.Fragment>
