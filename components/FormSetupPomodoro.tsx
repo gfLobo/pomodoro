@@ -1,10 +1,9 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
-import { Box, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Theme, useTheme } from '@mui/material';
+import { Grid, Theme } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Task } from '../interfaces/globals';
 import { v4 as uuidv4 } from 'uuid';
-import { Chip } from '@mui/joy';
 
 
 
@@ -108,7 +107,7 @@ export default function FormSetupPomodoro(propsTask: FormTask) {
                 renderInput={(params) => (
                     <TextField
                         {...params}
-                        label="Select"
+                        label="Tags"
                         variant="outlined"
                         onKeyDown={(e) => {
                             if (

@@ -80,15 +80,44 @@ function MyTimer(expiryTimestamp: ITimer) {
     ])
     const [currentBg, setCurrentBg] = React.useState<number>(0);
     const [Nrecord, setNRecord] = React.useState(0);
+    const [Mrecord, setMRecord] = React.useState(0);
     const [NvalueSec, setNvalueSec] = React.useState(0);
     const [intervals, setIntervals] = React.useState(1);
-    const [loops, setLoops] = React.useState(1);
+    const [pomodoro, setPomodoro] = React.useState(4+1);
     const [nextInterv, setNextIntrv] = React.useState(0);
     const [NPomodoro, setNPomodoro] = React.useState<ICardPomodoroHist>({
         id: uuidv4(),
         startTimestamp: new Date(),
         endTimestamp: new Date()
     });
+
+
+    const Mbreak: number = (Nrecord * pomodoro) * 0.042 < 1 ?
+        1
+        :
+        `${(Nrecord * pomodoro) * 0.042}`.includes(".") ?
+            parseFloat(((Nrecord * pomodoro) * 0.042).toFixed(1))
+            : (Nrecord * pomodoro) * 0.042;
+    const MSBreak = (Math.round(Mbreak) + 1) * 60000;
+
+
+    const MBigBreakLoop: number = (Nrecord * pomodoro) * 0.25 < 2 ?
+        2
+        :
+        `${(Nrecord * pomodoro) * 0.25}`.includes(".") ?
+            parseFloat(((Nrecord * pomodoro) * 0.25).toFixed(1))
+            : (Nrecord * pomodoro) * 0.25;
+    const MSBigBreakLoop = (MBigBreakLoop > 2 ? MBigBreakLoop + 5 : MBigBreakLoop) * 60000;
+
+
+    let intervalID: any;
+
+
+
+
+
+
+
 
 
     //functions
@@ -109,17 +138,12 @@ function MyTimer(expiryTimestamp: ITimer) {
     }
 
 
-    function restartLoop(controlled: boolean) {
+    function restartLoop() {
         const time = new Date();
         time.setSeconds(time.getSeconds() + (NvalueSec * 60));
         restart(time)
-        if (controlled) {
-            pause()
-            setPaused(controlled)
-
-        }
-
-
+        pause()
+        setPaused(true)
     }
 
 
@@ -136,91 +160,67 @@ function MyTimer(expiryTimestamp: ITimer) {
 
     function mapTimeIntervals() {
 
-
-        const Mbreak: number = Nrecord * 0.042 < 1 ?
-            1
-            :
-            `${Nrecord * 0.042}`.includes(".") ?
-                parseFloat((Nrecord * 0.042).toFixed(1))
-                : Nrecord * 0.042;
-        const MSBreak = Mbreak * 6000;
+        expiryTimestamp.window(minutes)
+        setNRecord(minutes)
+        setMRecord(minutes)
 
 
-        const MBigBreakLoop: number = Nrecord * 0.074 < 2 ?
-            2
-            :
-            `${Nrecord * 0.074}`.includes(".") ?
-                parseFloat((Nrecord * 0.074).toFixed(1))
-                : Nrecord * 0.074;
-        const MSBigBreakLoop = MBigBreakLoop * 12000;
-
-        if (minutes === 0) {
+        
+        if (Nrecord === 0) {
 
 
-            if (loops > 1) {
-                expiryTimestamp.notif({
-                    title: "Starting a new loop...",
-                    color: "warning",
-                    message: `Be prepared!`,
-                    severity: "warning",
-                    duration: MSBigBreakLoop
-                })
+            if (pomodoro > 1) {
+                setPomodoro(pomodoro - 1)
 
-                setLoops(loops - 1)
-                restartLoop(false)
-
-
-
-            } else if(!isPaused){
+            } else {
 
                 expiryTimestamp.notif({
-                    title: "A loop has been completed!",
+                    title: "A session has been completed!",
                     color: "success",
-                    message: `Take a long break about ${MBigBreakLoop} minutes`,
+                    message: `Take a long break about ${(MBigBreakLoop > 2 ? MBigBreakLoop + 5 : MBigBreakLoop)} minutes`,
                     severity: "success",
                     duration: MSBigBreakLoop
                 })
+                setNextIntrv(minutes / intervals)
+                pause();
                 expiryTimestamp.finishPomodoro(NPomodoro)
 
-                pause();
-                setPaused(true)
             }
 
-
-        } else {
-            if (parseInt((nextInterv - 1).toFixed(0)) === 0) {
-
-
-
-                const delay = (delayInms: number) => {
-                    return new Promise(resolve => setTimeout(resolve, delayInms));
-                }
-
-                const sample = async () => {
-                    pause();
-                    await delay(3000);
-                    expiryTimestamp.notif({
-                        title: `Recommended to a break about ${Mbreak} minutes`,
-                        color: "info",
-                        message: "Relax, hydrate and do some exercises",
-                        severity: "info",
-                        duration: MSBreak
-                    })
-                    resume();
-                }
-                sample();
-
-
-            } else {
-                setNextIntrv(parseInt((nextInterv - 1).toFixed(0)) )
-            }
         }
-        expiryTimestamp.window(minutes)
+
+
+        if (nextInterv - 1 != 0) {
+            setNextIntrv(parseInt((Math.round(nextInterv - 1)).toFixed(0)))
+        }else {
+            pause();
+            expiryTimestamp.notif({
+                title: "Taking a break",
+                color: "warning",
+                message: `A small break for ${MSBreak / 60000} minutes`,
+                severity: "info",
+                duration: MSBreak
+            })
+            if(minutes != 0 && Nrecord + 1 <= minutes){
+                setNextIntrv(Nrecord + 1)
+
+            }else{
+                restartLoop();
+            }
+
+            intervalID = setInterval(() => {
+                setPaused(false)
+                resume();
+                clearInterval(intervalID);
+            }, MSBreak);
+        }
+
+       
+
     }
 
 
     React.useEffect(mapTimeIntervals, [minutes])
-
 
     React.useEffect(() => {
         const time = new Date();
@@ -230,18 +230,19 @@ function MyTimer(expiryTimestamp: ITimer) {
             restart(time)
             pause()
 
-        }else{
+        } else {
             const Mtime = new Date()
             Mtime.setMinutes(time.getMinutes() + minutes)
-            setNPomodoro({ ...NPomodoro,  endTimestamp:   Mtime})
+            setNPomodoro({ ...NPomodoro, endTimestamp: Mtime })
 
         }
         setNRecord(minutes)
-        setNextIntrv((minutes / intervals))
+        setNextIntrv(minutes / intervals)
     }, [isPaused])
 
     React.useEffect(() => {
-        pause()
+        resume();
+        pause();
     }, []);
 
     return (
@@ -268,7 +269,7 @@ function MyTimer(expiryTimestamp: ITimer) {
 
                         <CircularProgress
                             determinate
-                            value={Math.round((100 / 59) * minutes)}
+                            value={Math.round((100 / 59) * Nrecord)}
                             sx={{
                                 "--CircularProgress-size": { sm: "15rem", xs: '7rem' },
                                 "--CircularProgress-track-thickness": "8px",
@@ -289,7 +290,7 @@ function MyTimer(expiryTimestamp: ITimer) {
                                 sx={{ typography: { sm: 'h1', xs: 'h3' } }}
                                 style={{ color: theme.palette.secondary.main }}
                             >
-                                {minutes}m
+                                {Nrecord}m
                                 <Typography
                                     sx={{ typography: { sm: 'body1', xs: 'caption' } }}
                                     style={{ color: theme.palette.info.main }}
@@ -323,21 +324,20 @@ function MyTimer(expiryTimestamp: ITimer) {
                     <Box>
 
                         <Box sx={{ ml: 2 }}>
-                            <FormLabel>Loops</FormLabel>
+                            <FormLabel>Pomodoros</FormLabel>
                             <Input
                                 startDecorator={<RestartAltIcon />}
                                 type="number"
-                                defaultValue={loops}
-                                value={loops}
+                                defaultValue={pomodoro}
+                                value={pomodoro}
                                 slotProps={{
                                     input: {
                                         min: 1,
-                                        max: 5,
                                     },
                                 }}
                                 sx={{ width: 80 }}
                                 onChange={(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-                                    setLoops(event.target.value as unknown as number)
+                                    setPomodoro(event.target.value as unknown as number)
 
                                 }}
                             />
@@ -349,7 +349,7 @@ function MyTimer(expiryTimestamp: ITimer) {
                                 slotProps={{
                                     input: {
                                         min: 1,
-                                        max: 5,
+                                        max: 6,
                                     },
                                 }}
                                 sx={{ width: 80 }}
@@ -384,9 +384,7 @@ function MyTimer(expiryTimestamp: ITimer) {
                             }}>
                                 {isPaused ? <PlayCircleIcon sx={{ fontSize: "150%" }} /> : <PauseIcon sx={{ fontSize: "150%" }} />}
                             </IconButton>
-                            <IconButton size="sm" color="neutral" onClick={() => {
-                                restartLoop(true)
-                            }}>
+                            <IconButton size="sm" color="neutral" onClick={restartLoop}>
                                 <RestoreIcon sx={{ fontSize: "150%" }} />
                             </IconButton>
                         </Box>
@@ -410,9 +408,9 @@ function MyTimer(expiryTimestamp: ITimer) {
                             restart(time)
                             pause()
                             setPaused(true)
-                            setNextIntrv((minutes / intervals))
+                            setNextIntrv(Mrecord / intervals)
                             setNvalueSec(value)
-
+                            setMRecord(minutes)
                         }}
                     />
                 </Box>
