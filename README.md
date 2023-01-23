@@ -4,13 +4,15 @@
         width="30%" 
         style="display: block; margin: 0 auto" />
 
----
 Pomodoro is a scheduling app for organize your time, notes and ideas
+        
+---
+
 
 ![Captura de tela_20230123_140945](https://user-images.githubusercontent.com/79761328/214105232-eb60ac8a-e506-4e82-9bed-7745905ae9ce.png)
 
 
----
+
 
 ## Features
 
