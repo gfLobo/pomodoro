@@ -101,7 +101,7 @@ export default function CardTask(props: ICardTask) {
                     }}
                 />
                 <div>
-                    <Typography sx={{ color: theme.palette.primary.contrastText }} style={{ wordBreak: "break-word" }} >
+                    <Typography sx={{ color: !state ? theme.palette.primary.contrastText : "white" }} style={{ wordBreak: "break-word" }} >
                         {props.title}
                     </Typography>
 
