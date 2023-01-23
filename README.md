@@ -15,11 +15,16 @@
 
 ## Features
 
-- Dark and light themes
-- Customizable pomodoro stopwatch
-- Multiple (and customizable) stopwatch wallpapers
-- To-do list with tags
-- Customizable window for embedding playlists or websites
+-Dark and light themes: You can switch between the two to match your personal preference.
+
+-Customizable pomodoro timer: You can set the timer to your desired time and intervals.
+
+-Multiple backgrounds: You can choose from different backgrounds or upload your own!
+
+-To-do list: Keep track of your tasks, and you can add tags to sort them.
+
+-Customizable window: You can add links from your favourite playlists or websites.
+
 ## Wiki
 
 [Read more](https://github.com/gfLobo/pomodoro/wiki)
