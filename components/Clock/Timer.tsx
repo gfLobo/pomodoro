@@ -83,7 +83,7 @@ function MyTimer(expiryTimestamp: ITimer) {
     const [Mrecord, setMRecord] = React.useState(0);
     const [NvalueSec, setNvalueSec] = React.useState(0);
     const [intervals, setIntervals] = React.useState(1);
-    const [pomodoro, setPomodoro] = React.useState(4 + 1);
+    const [pomodoro, setPomodoro] = React.useState(4);
     const [nextInterv, setNextIntrv] = React.useState(0);
     const [NPomodoro, setNPomodoro] = React.useState<ICardPomodoroHist>({
         id: uuidv4(),
