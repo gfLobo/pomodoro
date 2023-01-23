@@ -35,7 +35,6 @@ export default function CardTask(props: ICardTask) {
 
     return (
         <Box sx={{mb:2}}>
-            <Divider />
             <CardOverflow
                 variant="soft"
                 sx={{

@@ -75,7 +75,7 @@ export default function Home() {
               horizontal: 'right',
             }}
           >
-            <Alert variant="filled" severity={alertNotif.severity} color={alertNotif.color}>
+            <Alert variant="filled" onClose={handleClose} severity={alertNotif.severity} color={alertNotif.color}>
               <AlertTitle>{alertNotif.title}</AlertTitle>
               {alertNotif.message}
             </Alert>
