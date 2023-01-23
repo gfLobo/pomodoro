@@ -83,7 +83,7 @@ function MyTimer(expiryTimestamp: ITimer) {
     const [Mrecord, setMRecord] = React.useState(0);
     const [NvalueSec, setNvalueSec] = React.useState(0);
     const [intervals, setIntervals] = React.useState(1);
-    const [pomodoro, setPomodoro] = React.useState(4+1);
+    const [pomodoro, setPomodoro] = React.useState(4 + 1);
     const [nextInterv, setNextIntrv] = React.useState(0);
     const [NPomodoro, setNPomodoro] = React.useState<ICardPomodoroHist>({
         id: uuidv4(),
@@ -165,34 +165,22 @@ function MyTimer(expiryTimestamp: ITimer) {
         setMRecord(minutes)
 
 
-        
+
         if (Nrecord === 0) {
 
 
             if (pomodoro > 1) {
                 setPomodoro(pomodoro - 1)
 
-            } else {
-
-                expiryTimestamp.notif({
-                    title: "A session has been completed!",
-                    color: "success",
-                    message: `Take a long break about ${(MBigBreakLoop > 2 ? MBigBreakLoop + 5 : MBigBreakLoop)} minutes`,
-                    severity: "success",
-                    duration: MSBigBreakLoop
-                })
-                setNextIntrv(minutes / intervals)
-                pause();
-                expiryTimestamp.finishPomodoro(NPomodoro)
-
             }
+
 
         }
 
 
         if (nextInterv - 1 != 0) {
             setNextIntrv(parseInt((Math.round(nextInterv - 1)).toFixed(0)))
-        }else {
+        } else if (pomodoro - 1 != 0) {
             pause();
             expiryTimestamp.notif({
                 title: "Taking a break",
@@ -201,10 +189,10 @@ function MyTimer(expiryTimestamp: ITimer) {
                 severity: "info",
                 duration: MSBreak
             })
-            if(minutes != 0 && Nrecord + 1 <= minutes){
+            if (minutes != 0 && Nrecord + 1 <= minutes) {
                 setNextIntrv(Nrecord + 1)
 
-            }else{
+            } else {
                 restartLoop();
             }
 
@@ -213,9 +201,21 @@ function MyTimer(expiryTimestamp: ITimer) {
                 resume();
                 clearInterval(intervalID);
             }, MSBreak);
+        } else {
+
+            expiryTimestamp.notif({
+                title: "A session has been completed!",
+                color: "success",
+                message: `Take a long break about ${(MBigBreakLoop > 2 ? MBigBreakLoop + 5 : MBigBreakLoop)} minutes`,
+                severity: "success",
+                duration: MSBigBreakLoop
+            })
+            restartLoop()
+            expiryTimestamp.finishPomodoro(NPomodoro)
+
         }
 
-       
+
 
     }
 
