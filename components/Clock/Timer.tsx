@@ -164,17 +164,27 @@ function MyTimer(expiryTimestamp: ITimer) {
         setNRecord(minutes)
         setMRecord(minutes)
 
+        
 
+        if (minutes === 0 && !isPaused) {
 
-        if (Nrecord === 0) {
-
+           
 
             if (pomodoro > 1) {
                 setPomodoro(pomodoro - 1)
 
+            }else{
+                expiryTimestamp.notif({
+                    title: "A session has been completed!",
+                    color: "success",
+                    message: `Take a long break about ${(MBigBreakLoop > 2 ? MBigBreakLoop + 5 : MBigBreakLoop)} minutes`,
+                    severity: "success",
+                    duration: MSBigBreakLoop
+                })
+                restartLoop()
+                expiryTimestamp.finishPomodoro(NPomodoro)
+    
             }
-
-
         }
 
 
@@ -201,20 +211,7 @@ function MyTimer(expiryTimestamp: ITimer) {
                 resume();
                 clearInterval(intervalID);
             }, MSBreak);
-        } else {
-
-            expiryTimestamp.notif({
-                title: "A session has been completed!",
-                color: "success",
-                message: `Take a long break about ${(MBigBreakLoop > 2 ? MBigBreakLoop + 5 : MBigBreakLoop)} minutes`,
-                severity: "success",
-                duration: MSBigBreakLoop
-            })
-            restartLoop()
-            expiryTimestamp.finishPomodoro(NPomodoro)
-
-        }
-
+        } 
 
 
     }
