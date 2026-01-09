@@ -190,8 +190,8 @@ export default function DrawerX(notif: INotif) {
                     </Box>
                     <iframe
                         src={urlEmbed != '' ? urlEmbed : 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/265917916&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false'}
-                        width="100%"
-                        height="auto"
+                        width="auto"
+                        height="100%"
                         allowFullScreen
                         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"
                         style={{ borderRadius: 20, display: "flex", marginBottom: 15 }}
