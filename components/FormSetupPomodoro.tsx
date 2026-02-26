@@ -1,6 +1,6 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
-import { Grid, Theme } from '@mui/material';
+import { Grid } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Task } from '../interfaces/globals';
 import { v4 as uuidv4 } from 'uuid';
@@ -14,28 +14,6 @@ interface FormTask {
 }
 
 
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        },
-    },
-};
-
-
-
-function getStyles(name: string, personName: readonly string[], theme: Theme) {
-    return {
-        fontWeight:
-            personName.indexOf(name) === -1
-                ? theme.typography.fontWeightRegular
-                : theme.typography.fontWeightMedium,
-    };
-}
 
 
 

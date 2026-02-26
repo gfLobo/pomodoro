@@ -23,7 +23,7 @@ interface ITask {
 
 export default function SpeedDialNewTask(searchTask: ITask) {
     const [open, setOpen] = React.useState(false);
-    const [toDoTasks, setToDoTasks] = React.useState<Array<Task>>([])
+    const [toDoTasks, setToDoTasks] = React.useState<Array<Task>>([]);
     const handleOpen = () => setOpen(!open);
     const theme = useTheme();
     const [Ntask, setNTask] = React.useState<Task>({
@@ -35,8 +35,10 @@ export default function SpeedDialNewTask(searchTask: ITask) {
 
 
     function openNewTask() {
-        if (Ntask.title.length > 0)
+        if (Ntask.title.length > 0){
+            localStorage.setItem("tasks", JSON.stringify([...toDoTasks, Ntask]));
             setToDoTasks([...toDoTasks, Ntask])
+        }
     }
 
 
@@ -47,7 +49,25 @@ export default function SpeedDialNewTask(searchTask: ITask) {
 
     function removeTask(taskID: string) {
         setToDoTasks(toDoTasks.filter((task: Task) => task.id != taskID))
+        localStorage.setItem("tasks", JSON.stringify(toDoTasks.filter((task: Task) => task.id != taskID)));
     }
+    React.useEffect(() => {
+        if (typeof window !== "undefined") {
+            const savedTasks = localStorage.getItem("tasks");
+
+            if (savedTasks) {
+                const parsed = JSON.parse(savedTasks);
+
+                const formatted = parsed.map((task: Task) => ({
+                    ...task,
+                    timeOpen: new Date(task.timeOpen)
+                }));
+
+                setToDoTasks(formatted);
+            }
+        }
+    }, []);
+
 
     return (
         <React.Fragment>
@@ -74,7 +94,7 @@ export default function SpeedDialNewTask(searchTask: ITask) {
                                 sx={{
                                     "& .MuiButtonBase-root": {
                                         bgcolor: theme.palette.mode === 'light' ? theme.palette.primary.main : theme.palette.secondary.main,
-                                        ":hover":{
+                                        ":hover": {
                                             bgcolor: theme.palette.mode === 'light' ? theme.palette.secondary.main : theme.palette.primary.main,
 
                                         }
